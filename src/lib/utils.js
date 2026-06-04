@@ -23,7 +23,7 @@ export function formatDuration(totalMinutes) {
 }
 
 export function dayOfLife(dob, today = new Date()) {
-  return differenceInDays(today, dob) + 1;
+  return Math.max(1, differenceInDays(today, dob) + 1);
 }
 
 export function pumpExpiry(storage, labelDate) {
