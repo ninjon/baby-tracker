@@ -1,0 +1,86 @@
+<h2>Design Direction</h2>
+<p class="subtitle">Sophie's Tracker — pick the feel that fits a sleep-deprived 3am parent</p>
+
+<div class="cards">
+
+  <!-- Option A: Calm Utility -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#FAFAF8;padding:20px;border-bottom:1px solid #eee">
+      <div style="font-family:system-ui;color:#1A1814">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <span style="font-size:13px;font-weight:600;letter-spacing:.05em;color:#888;text-transform:uppercase">Last feeding</span>
+          <span style="font-size:13px;color:#888">2h 14m ago</span>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button style="flex:1;padding:14px;background:#E8855A;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600">+ Feed</button>
+          <button style="flex:1;padding:14px;background:#fff;color:#1A1814;border:1.5px solid #E0DAD3;border-radius:10px;font-size:15px;font-weight:600">+ Diaper</button>
+          <button style="flex:1;padding:14px;background:#fff;color:#1A1814;border:1.5px solid #E0DAD3;border-radius:10px;font-size:15px;font-weight:600">+ Sleep</button>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:#fff;border-radius:10px;border:1px solid #E0DAD3;display:flex;justify-content:space-between">
+          <span style="color:#555;font-size:14px">🍼 Bottle · 80ml</span>
+          <span style="color:#aaa;font-size:13px">9:42 AM</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Calm Utility ⭐</h3>
+      <p>Warm off-white, coral accent, big touch targets. Operates at 3am without thinking. Repeated daily use — no marketing fluff, just the workflow.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Clinical Clean -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#F5F7FA;padding:20px;border-bottom:1px solid #eee">
+      <div style="font-family:system-ui;color:#111827">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <span style="font-size:13px;font-weight:600;letter-spacing:.05em;color:#6B7280;text-transform:uppercase">Last feeding</span>
+          <span style="font-size:13px;color:#6B7280">2h 14m ago</span>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button style="flex:1;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600">+ Feed</button>
+          <button style="flex:1;padding:14px;background:#fff;color:#374151;border:1.5px solid #D1D5DB;border-radius:8px;font-size:15px;font-weight:600">+ Diaper</button>
+          <button style="flex:1;padding:14px;background:#fff;color:#374151;border:1.5px solid #D1D5DB;border-radius:8px;font-size:15px;font-weight:600">+ Sleep</button>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:#fff;border-radius:8px;border:1px solid #D1D5DB;display:flex;justify-content:space-between">
+          <span style="color:#374151;font-size:14px">🍼 Bottle · 80ml</span>
+          <span style="color:#9CA3AF;font-size:13px">9:42 AM</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Clinical Clean</h3>
+      <p>Pure white, blue accent, feels like a medical app. Precise and trustworthy but cold — less comforting for anxious new parents at 3am.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Warm Dark -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1C1917;padding:20px;border-bottom:1px solid #333">
+      <div style="font-family:system-ui;color:#F5F0EB">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <span style="font-size:13px;font-weight:600;letter-spacing:.05em;color:#A8A29E;text-transform:uppercase">Last feeding</span>
+          <span style="font-size:13px;color:#A8A29E">2h 14m ago</span>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button style="flex:1;padding:14px;background:#C084FC;color:#1C1917;border:none;border-radius:10px;font-size:15px;font-weight:700">+ Feed</button>
+          <button style="flex:1;padding:14px;background:#292524;color:#F5F0EB;border:1.5px solid #44403C;border-radius:10px;font-size:15px;font-weight:600">+ Diaper</button>
+          <button style="flex:1;padding:14px;background:#292524;color:#F5F0EB;border:1.5px solid #44403C;border-radius:10px;font-size:15px;font-weight:600">+ Sleep</button>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:#292524;border-radius:10px;border:1px solid #44403C;display:flex;justify-content:space-between">
+          <span style="color:#D6D3D1;font-size:14px">🍼 Bottle · 80ml</span>
+          <span style="color:#78716C;font-size:13px">9:42 AM</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Warm Dark</h3>
+      <p>Dark-first palette, perfect for night feeds. Warm stone tones so it does not feel cold. Easy on eyes at 2am. Lavender accent pops without harshness.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top:16px;padding:14px;background:rgba(255,255,255,0.05);border-radius:8px">
+  <p class="label">Design principle across all options</p>
+  <p>Primary workflow visible immediately. No marketing copy in the app. Tap targets minimum 56px. Time since last event always on screen. The log button is always one tap away.</p>
+</div>
