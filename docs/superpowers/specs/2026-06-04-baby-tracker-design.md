@@ -115,7 +115,7 @@ Events grouped under sticky date headers. Milestones appear inline in the timeli
 
 Opened via the centre FAB or any quick log button. A bottom sheet slides up with a draggable handle.
 
-**Category selector** (if opened via FAB): Feed · Diaper · Sleep · Growth · Milestone · Journal · Symptom
+**Category selector** (if opened via FAB): Feed · Diaper · Sleep · Growth · Pump · Milestone · Journal · Symptom
 
 **Time field** — pre-filled to current time, tappable to open a time wheel (allows back-filling missed logs).
 
@@ -152,6 +152,14 @@ Opened via the centre FAB or any quick log button. A bottom sheet slides up with
 - Title (text)
 - Description (optional)
 - Photo (optional, stored in Supabase Storage)
+
+**Pump:**
+
+- Duration (timer or manual minutes)
+- Volume: Left (ml) · Right (ml) — total auto-computed; or enter total directly
+- Storage: Feed now · Fridge · Freezer
+- If Fridge or Freezer: auto-stamps today's date as the label; expiry shown inline (fridge = 4 days, freezer = 6 months)
+- Notes (optional)
 
 **Symptom:**
 
@@ -191,6 +199,11 @@ Four sub-sections selectable via a segmented control:
 ### 5.5 More
 
 A simple menu screen linking to:
+
+**Pump Log & Milk Stash** — Two views in one screen:
+
+- _Session log_: reverse-chronological list of pump sessions (time, duration, volume, storage destination)
+- _Milk stash_: running inventory split by Fridge and Freezer. Each stored batch shows volume, label date, and expiry. Batches are depleted automatically when a bottle feed is logged and marked "from stash". Expired batches are highlighted in amber.
 
 **Milestones** — Photo + caption timeline. Filterable by month. Each card shows photo (if attached), milestone name, date, and who logged it.
 
@@ -358,6 +371,20 @@ journal_entries
   created_at timestamptz
   updated_at timestamptz
 
+pump_logs
+  id uuid PK
+  baby_id uuid FK babies
+  logged_by uuid FK users
+  timestamp timestamptz
+  duration_minutes int           -- nullable
+  volume_left_ml int             -- nullable
+  volume_right_ml int            -- nullable
+  volume_total_ml int            -- computed: left + right, or manually entered
+  storage text CHECK (storage IN ('feed_now','fridge','freezer'))
+  label_date date                -- auto-set to today when fridge/freezer
+  notes text
+  created_at timestamptz
+
 ai_insights
   id uuid PK
   baby_id uuid FK babies
@@ -381,6 +408,7 @@ All tables have Row Level Security policies: users can only read/write rows wher
 - Diaper log (colour picker + inline warnings)
 - Sleep log (live timer)
 - Growth log (weight / height / head entry form — no chart yet)
+- Pump log + Milk Stash (session log, fridge/freezer inventory, expiry tracking)
 - Home screen with status cards
 - History timeline with filters
 - Family sharing (invite by link, viewer/parent roles)
