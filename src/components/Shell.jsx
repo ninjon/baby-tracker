@@ -41,8 +41,10 @@ export default function Shell({ babyId }) {
           background: "var(--color-surface)",
           borderTop: "1px solid var(--color-border)",
           display: "flex",
-          alignItems: "flex-end",
-          padding: "8px 0 env(safe-area-inset-bottom, 12px)",
+          alignItems: "center",
+          paddingTop: 8,
+          paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))",
+          minHeight: 60,
           zIndex: 50,
         }}
       >
