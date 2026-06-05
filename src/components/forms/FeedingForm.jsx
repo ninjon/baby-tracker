@@ -40,6 +40,9 @@ export default function FeedingForm({ onSave, onCancel }) {
     borderRadius: "var(--radius-card)",
     fontSize: 15,
     color: "var(--color-text-primary)",
+    background: "var(--color-surface)",
+    textAlign: "center",
+    boxSizing: "border-box",
   };
 
   return (

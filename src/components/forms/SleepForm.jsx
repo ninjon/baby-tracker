@@ -30,6 +30,9 @@ export default function SleepForm({ onSave, onCancel }) {
     fontSize: 15,
     marginTop: 6,
     color: "var(--color-text-primary)",
+    background: "var(--color-surface)",
+    textAlign: "center",
+    boxSizing: "border-box",
   };
   const labelStyle = {
     fontSize: 10,
