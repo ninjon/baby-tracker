@@ -3,9 +3,9 @@ import { DIAPER_COLORS, CONSISTENCIES } from "../../lib/diaperConstants";
 import { format } from "date-fns";
 
 const TYPES = [
-  { value: "wet", label: "Wet", emoji: "💧" },
-  { value: "dirty", label: "Dirty", emoji: "💩" },
-  { value: "both", label: "Both", emoji: "💧💩" },
+  { value: "wet", label: "Wet" },
+  { value: "dirty", label: "Dirty" },
+  { value: "both", label: "Both" },
 ];
 
 export default function DiaperForm({ onSave, onCancel }) {
@@ -50,7 +50,7 @@ export default function DiaperForm({ onSave, onCancel }) {
           padding: "6px 0 14px",
         }}
       >
-        <span style={{ fontSize: 17, fontWeight: 700 }}>💩 Diaper Log</span>
+        <span style={{ fontSize: 17, fontWeight: 700 }}>Diaper Log</span>
         <input
           type="datetime-local"
           value={timestamp}
@@ -104,8 +104,7 @@ export default function DiaperForm({ onSave, onCancel }) {
                   : "var(--color-border)",
             }}
           >
-            <div>{t.emoji}</div>
-            <div style={{ fontSize: 10, marginTop: 3 }}>{t.label}</div>
+            {t.label}
           </button>
         ))}
       </div>

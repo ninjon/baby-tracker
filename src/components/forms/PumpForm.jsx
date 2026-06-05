@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { pumpExpiry, computePumpTotal } from "../../lib/utils";
 
 const STORAGE_OPTIONS = [
-  { value: "feed_now", label: "Feed Now", emoji: "🍼" },
+  { value: "feed_now", label: "Feed Now" },
   { value: "fridge", label: "Fridge", emoji: "❄️" },
   { value: "freezer", label: "Freezer", emoji: "🧊" },
 ];
@@ -68,7 +68,7 @@ export default function PumpForm({ onSave, onCancel }) {
           padding: "6px 0 14px",
         }}
       >
-        <span style={{ fontSize: 17, fontWeight: 700 }}>🥛 Pump Log</span>
+        <span style={{ fontSize: 17, fontWeight: 700 }}>Pump Log</span>
         <input
           type="datetime-local"
           value={timestamp}

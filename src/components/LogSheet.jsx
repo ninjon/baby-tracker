@@ -7,13 +7,20 @@ import GrowthForm from "./forms/GrowthForm";
 import PumpForm from "./forms/PumpForm";
 import { supabase } from "../lib/supabase";
 import { useLogger } from "../context/LoggerContext";
+import {
+  BottleIcon,
+  DropletIcon,
+  MoonIcon,
+  RulerIcon,
+  FlaskIcon,
+} from "./Icons";
 
 const CATEGORIES = [
-  { value: "feeding", label: "Feeding", emoji: "🍼" },
-  { value: "diaper", label: "Diaper", emoji: "💩" },
-  { value: "sleep", label: "Sleep", emoji: "😴" },
-  { value: "growth", label: "Growth", emoji: "📏" },
-  { value: "pump", label: "Pump", emoji: "🥛" },
+  { value: "feeding", label: "Feeding", Icon: BottleIcon },
+  { value: "diaper", label: "Diaper", Icon: DropletIcon },
+  { value: "sleep", label: "Sleep", Icon: MoonIcon },
+  { value: "growth", label: "Growth", Icon: RulerIcon },
+  { value: "pump", label: "Pump", Icon: FlaskIcon },
 ];
 
 const TABLE_MAP = {
@@ -131,9 +138,13 @@ export default function LogSheet({
                   textAlign: "left",
                   minHeight: "var(--tap-min-height)",
                   color: "var(--color-text-primary)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
                 }}
               >
-                {cat.emoji} <span>{cat.label}</span>
+                <cat.Icon size={18} color="var(--color-accent)" />
+                <span>{cat.label}</span>
               </button>
             ))}
           </div>

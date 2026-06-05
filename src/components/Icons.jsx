@@ -153,3 +153,14 @@ export function SignOutIcon(props) {
     </Icon>
   );
 }
+
+// Pump / milk stash — flask/beaker shape
+export function FlaskIcon(props) {
+  return (
+    <Icon {...props}>
+      <path d="M9 3v7.5L4.5 18A1 1 0 0 0 5.4 19.5h13.2a1 1 0 0 0 .9-1.5L15 10.5V3" />
+      <line x1="9" y1="3" x2="15" y2="3" />
+      <line x1="7" y1="14" x2="17" y2="14" />
+    </Icon>
+  );
+}

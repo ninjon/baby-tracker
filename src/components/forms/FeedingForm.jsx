@@ -55,7 +55,7 @@ export default function FeedingForm({ onSave, onCancel }) {
           padding: "6px 0 14px",
         }}
       >
-        <span style={{ fontSize: 17, fontWeight: 700 }}>🍼 Feeding Log</span>
+        <span style={{ fontSize: 17, fontWeight: 700 }}>Feeding Log</span>
         <input
           type="datetime-local"
           value={timestamp}
@@ -103,7 +103,7 @@ export default function FeedingForm({ onSave, onCancel }) {
               border: `1.5px solid ${type === t ? "var(--color-accent)" : "var(--color-border)"}`,
             }}
           >
-            {t === "breast" ? "🤱 Breast" : "🍼 Bottle"}
+            {t === "breast" ? "Breast" : "Bottle"}
           </button>
         ))}
       </div>

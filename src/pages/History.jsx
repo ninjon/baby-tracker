@@ -3,14 +3,22 @@ import { format, isToday, isYesterday } from "date-fns";
 import { useBaby } from "../context/BabyContext";
 import { useRealtimeLogs } from "../hooks/useRealtimeLogs";
 import { formatDuration } from "../lib/utils";
+import {
+  BottleIcon,
+  DropletIcon,
+  MoonIcon,
+  RulerIcon,
+  FlaskIcon,
+  HistoryIcon,
+} from "../components/Icons";
 
 const FILTERS = [
-  { value: "all", label: "All" },
-  { value: "feeding", label: "🍼 Feed" },
-  { value: "diaper", label: "💧 Diaper" },
-  { value: "sleep", label: "😴 Sleep" },
-  { value: "growth", label: "📏 Growth" },
-  { value: "pump", label: "🥛 Pump" },
+  { value: "all", label: "All", Icon: null },
+  { value: "feeding", label: "Feed", Icon: BottleIcon },
+  { value: "diaper", label: "Diaper", Icon: DropletIcon },
+  { value: "sleep", label: "Sleep", Icon: MoonIcon },
+  { value: "growth", label: "Growth", Icon: RulerIcon },
+  { value: "pump", label: "Pump", Icon: FlaskIcon },
 ];
 
 function groupByDate(logs) {
@@ -61,11 +69,11 @@ function logTitle(log) {
 }
 
 const CATEGORY_STYLES = {
-  feeding: { bg: "#FFF0E8", emoji: "🍼" },
-  diaper: { bg: "#F0F5FF", emoji: "💧" },
-  sleep: { bg: "#F5F0FF", emoji: "😴" },
-  growth: { bg: "#F0FFF0", emoji: "📏" },
-  pump: { bg: "#FFF8F0", emoji: "🥛" },
+  feeding: { bg: "#FFF0E8", Icon: BottleIcon },
+  diaper: { bg: "#F0F5FF", Icon: DropletIcon },
+  sleep: { bg: "#F5F0FF", Icon: MoonIcon },
+  growth: { bg: "#F0FFF0", Icon: RulerIcon },
+  pump: { bg: "#FFF8F0", Icon: FlaskIcon },
 };
 
 export default function History() {
@@ -110,6 +118,9 @@ export default function History() {
               border: "none",
               cursor: "pointer",
               whiteSpace: "nowrap",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 5,
               background:
                 activeFilter === f.value
                   ? "var(--color-accent)"
@@ -124,6 +135,12 @@ export default function History() {
                   : "0 0 0 1px var(--color-border)",
             }}
           >
+            {f.Icon && (
+              <f.Icon
+                size={12}
+                color={activeFilter === f.value ? "#fff" : "var(--color-text-secondary)"}
+              />
+            )}
             {f.label}
           </button>
         ))}
@@ -150,7 +167,7 @@ export default function History() {
               color: "var(--color-text-secondary)",
             }}
           >
-            <div style={{ fontSize: 32, marginBottom: 12 }}>📋</div>
+            
             <div
               style={{
                 fontFamily: "var(--font-heading)",
@@ -186,7 +203,7 @@ export default function History() {
             {grouped[dateKey].map((log) => {
               const style = CATEGORY_STYLES[log.category] ?? {
                 bg: "#F5F5F5",
-                emoji: "📋",
+                Icon: HistoryIcon,
               };
               const time = log.sortTime
                 ? format(new Date(log.sortTime), "h:mm a")
@@ -218,7 +235,7 @@ export default function History() {
                       flexShrink: 0,
                     }}
                   >
-                    {style.emoji}
+                    <style.Icon size={16} color="var(--color-accent)" />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div

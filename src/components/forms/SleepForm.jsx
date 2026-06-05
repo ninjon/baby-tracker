@@ -55,7 +55,7 @@ export default function SleepForm({ onSave, onCancel }) {
   return (
     <div style={{ padding: "0 16px 24px" }}>
       <div style={{ padding: "6px 0 14px", fontSize: 17, fontWeight: 700 }}>
-        😴 Sleep Log
+        Sleep Log
       </div>
 
       <label style={{ display: "block", marginBottom: 14 }}>

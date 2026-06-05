@@ -66,7 +66,7 @@ export default function GrowthForm({ onSave, onCancel }) {
           padding: "6px 0 14px",
         }}
       >
-        <span style={{ fontSize: 17, fontWeight: 700 }}>📏 Growth Log</span>
+        <span style={{ fontSize: 17, fontWeight: 700 }}>Growth Log</span>
         <input
           type="datetime-local"
           value={measuredAt}

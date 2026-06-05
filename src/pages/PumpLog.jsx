@@ -21,7 +21,7 @@ export default function PumpLog() {
           marginBottom: 12,
         }}
       >
-        🥛 Pump Log
+        Pump Log
       </div>
 
       <div style={{ display: "flex", gap: 8, padding: "0 16px 12px" }}>
@@ -235,5 +235,5 @@ function StashSection({ title, emoji, batches }) {
 function storageLabel(storage) {
   if (storage === "fridge") return "❄️ Fridge";
   if (storage === "freezer") return "🧊 Freezer";
-  return "🍼 Fed now";
+  return "Fed now";
 }
