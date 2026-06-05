@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BottomSheet from "./BottomSheet";
 import FeedingForm from "./forms/FeedingForm";
 import DiaperForm from "./forms/DiaperForm";
@@ -36,6 +36,14 @@ export default function LogSheet({
   const [error, setError] = useState(null);
   const { logger } = useLogger();
 
+  // Reset to initialCategory each time the sheet opens
+  useEffect(() => {
+    if (open) {
+      setActiveCategory(initialCategory ?? null);
+      setError(null);
+    }
+  }, [open, initialCategory]);
+
   async function handleSave(payload) {
     setSaving(true);
     setError(null);
@@ -43,14 +51,12 @@ export default function LogSheet({
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    const { error: dbErr } = await supabase
-      .from(table)
-      .insert({
-        ...payload,
-        baby_id: babyId,
-        logged_by: user.id,
-        logged_by_name: logger,
-      });
+    const { error: dbErr } = await supabase.from(table).insert({
+      ...payload,
+      baby_id: babyId,
+      logged_by: user.id,
+      logged_by_name: logger,
+    });
     setSaving(false);
     if (dbErr) {
       setError(dbErr.message);
