@@ -6,6 +6,7 @@ import SleepForm from "./forms/SleepForm";
 import GrowthForm from "./forms/GrowthForm";
 import PumpForm from "./forms/PumpForm";
 import { supabase } from "../lib/supabase";
+import { useLogger } from "../context/LoggerContext";
 
 const CATEGORIES = [
   { value: "feeding", label: "Feeding", emoji: "🍼" },
@@ -33,6 +34,7 @@ export default function LogSheet({
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const { logger } = useLogger();
 
   async function handleSave(payload) {
     setSaving(true);
@@ -43,7 +45,12 @@ export default function LogSheet({
     } = await supabase.auth.getUser();
     const { error: dbErr } = await supabase
       .from(table)
-      .insert({ ...payload, baby_id: babyId, logged_by: user.id });
+      .insert({
+        ...payload,
+        baby_id: babyId,
+        logged_by: user.id,
+        logged_by_name: logger,
+      });
     setSaving(false);
     if (dbErr) {
       setError(dbErr.message);

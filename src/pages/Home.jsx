@@ -1,13 +1,20 @@
 import { useOutletContext } from "react-router-dom";
 import { useBaby } from "../context/BabyContext";
+import { useLogger } from "../context/LoggerContext";
 import { useRealtimeLogs } from "../hooks/useRealtimeLogs";
 import { timeSince, dayOfLife } from "../lib/utils";
+import {
+  BottleIcon,
+  DropletIcon,
+  MoonIcon,
+  RulerIcon,
+} from "../components/Icons";
 
 const QUICK_LOG_BUTTONS = [
-  { category: "feeding", label: "🍼 Feeding" },
-  { category: "diaper", label: "💧 Diaper" },
-  { category: "sleep", label: "😴 Sleep" },
-  { category: "growth", label: "📏 Growth" },
+  { category: "feeding", label: "Feeding", Icon: BottleIcon },
+  { category: "diaper", label: "Diaper", Icon: DropletIcon },
+  { category: "sleep", label: "Sleep", Icon: MoonIcon },
+  { category: "growth", label: "Growth", Icon: RulerIcon },
 ];
 
 const FEED_URGENT_MS = 3 * 3600000;
@@ -15,6 +22,7 @@ const DIAPER_URGENT_MS = 4 * 3600000;
 
 export default function Home() {
   const { baby } = useBaby();
+  const { logger, switchLogger, LOGGERS } = useLogger();
   const { openLog } = useOutletContext() ?? {};
   const { logs } = useRealtimeLogs(baby?.id, 50);
 
@@ -27,12 +35,13 @@ export default function Home() {
 
   return (
     <div style={{ padding: "16px", minHeight: "100%" }}>
+      {/* Header */}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 20,
+          marginBottom: 16,
         }}
       >
         <div>
@@ -47,26 +56,85 @@ export default function Home() {
           >
             Today
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700 }}>
-            {baby?.name} · Day {dob ? dayOfLife(dob) : "—"}
+          <div
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: 22,
+              fontWeight: 400,
+            }}
+          >
+            {baby?.name} · {dob ? dayOfLife(dob) : "—"}
           </div>
         </div>
+        {/* Initials avatar */}
         <div
           style={{
-            width: 36,
-            height: 36,
+            width: 38,
+            height: 38,
             borderRadius: "50%",
-            background: "#F5EDE8",
+            background: "var(--color-accent)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 18,
+            color: "#fff",
+            fontSize: 14,
+            fontWeight: 700,
+            flexShrink: 0,
           }}
         >
-          👶
+          {baby?.name?.[0] ?? "S"}
         </div>
       </div>
 
+      {/* Logger switcher */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          marginBottom: 18,
+        }}
+      >
+        <span
+          style={{
+            fontSize: 11,
+            color: "var(--color-text-secondary)",
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            marginRight: 4,
+          }}
+        >
+          Logging as
+        </span>
+        {LOGGERS.map((name) => (
+          <button
+            key={name}
+            onClick={() => switchLogger(name)}
+            style={{
+              padding: "5px 14px",
+              borderRadius: 20,
+              border: "1.5px solid",
+              borderColor:
+                logger === name ? "var(--color-accent)" : "var(--color-border)",
+              background:
+                logger === name
+                  ? "var(--color-accent)"
+                  : "var(--color-surface)",
+              color: logger === name ? "#fff" : "var(--color-text-secondary)",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              transition:
+                "background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast)",
+            }}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+
+      {/* Status cards */}
       <div
         style={{
           display: "grid",
@@ -76,7 +144,6 @@ export default function Home() {
         }}
       >
         <StatusCard
-          emoji="🍼"
           label="Fed"
           value={lastFeed ? timeSince(new Date(lastFeed.timestamp)) : "—"}
           sub={lastFeed ? "ago" : ""}
@@ -86,7 +153,6 @@ export default function Home() {
           }
         />
         <StatusCard
-          emoji="💧"
           label="Diaper"
           value={lastDiaper ? timeSince(new Date(lastDiaper.timestamp)) : "—"}
           sub={lastDiaper ? "ago" : ""}
@@ -97,14 +163,12 @@ export default function Home() {
         />
         {activeSleep ? (
           <StatusCard
-            emoji="😴"
             label="Sleeping"
             value={timeSince(new Date(activeSleep.start_time))}
             sub="since"
           />
         ) : (
           <StatusCard
-            emoji="☀️"
             label="Awake"
             value={lastSleep ? timeSince(new Date(lastSleep.end_time)) : "—"}
             sub={lastSleep ? "since" : ""}
@@ -112,6 +176,7 @@ export default function Home() {
         )}
       </div>
 
+      {/* Quick log */}
       <div
         style={{
           fontSize: 11,
@@ -132,37 +197,42 @@ export default function Home() {
           marginBottom: 20,
         }}
       >
-        {QUICK_LOG_BUTTONS.map((btn) => (
-          <button
-            key={btn.category}
-            onClick={() => openLog?.(btn.category)}
-            style={{
-              padding: 14,
-              background:
-                btn.category === "feeding"
+        {QUICK_LOG_BUTTONS.map((btn) => {
+          const isPrimary = btn.category === "feeding";
+          return (
+            <button
+              key={btn.category}
+              onClick={() => openLog?.(btn.category)}
+              style={{
+                padding: "14px 16px",
+                background: isPrimary
                   ? "var(--color-accent)"
                   : "var(--color-surface)",
-              color:
-                btn.category === "feeding"
-                  ? "#fff"
-                  : "var(--color-text-primary)",
-              border:
-                btn.category === "feeding"
-                  ? "none"
-                  : "1.5px solid var(--color-border)",
-              borderRadius: "var(--radius-card)",
-              fontSize: 15,
-              fontWeight: 600,
-              textAlign: "left",
-              cursor: "pointer",
-              minHeight: "var(--tap-min-height)",
-            }}
-          >
-            {btn.label}
-          </button>
-        ))}
+                color: isPrimary ? "#fff" : "var(--color-text-primary)",
+                border: isPrimary ? "none" : "1.5px solid var(--color-border)",
+                borderRadius: "var(--radius-card)",
+                fontSize: 15,
+                fontWeight: 600,
+                textAlign: "left",
+                cursor: "pointer",
+                minHeight: "var(--tap-min-height)",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                boxShadow: isPrimary ? "none" : "var(--shadow-card)",
+              }}
+            >
+              <btn.Icon
+                size={18}
+                color={isPrimary ? "#fff" : "var(--color-accent)"}
+              />
+              {btn.label}
+            </button>
+          );
+        })}
       </div>
 
+      {/* AI Insights placeholder */}
       <div
         style={{
           background: "var(--color-accent-light)",
@@ -187,7 +257,7 @@ export default function Home() {
             AI Insights
           </div>
           <div style={{ fontSize: 12, color: "#7A4030", lineHeight: 1.4 }}>
-            Insights will appear here once there's enough data (Phase 4).
+            Insights will appear here once there&apos;s enough data.
           </div>
         </div>
       </div>
@@ -195,7 +265,7 @@ export default function Home() {
   );
 }
 
-function StatusCard({ emoji, label, value, sub, urgent }) {
+function StatusCard({ label, value, sub, urgent }) {
   return (
     <div
       style={{
@@ -204,17 +274,18 @@ function StatusCard({ emoji, label, value, sub, urgent }) {
         borderRadius: "var(--radius-card)",
         padding: 10,
         textAlign: "center",
+        boxShadow: "var(--shadow-card)",
       }}
     >
-      <div style={{ fontSize: 18, marginBottom: 2 }}>{emoji}</div>
       <div style={{ fontSize: 11, color: "#888", fontWeight: 500 }}>
         {label}
       </div>
       <div
         style={{
-          fontSize: 13,
+          fontSize: 15,
           fontWeight: 700,
           color: urgent ? "var(--color-warning)" : "var(--color-text-primary)",
+          marginTop: 2,
         }}
       >
         {value}

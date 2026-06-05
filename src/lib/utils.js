@@ -22,8 +22,11 @@ export function formatDuration(totalMinutes) {
   return `${hours}h ${minutes}m`;
 }
 
+// Returns "Day N" after birth, or "Xd to go" before birth
 export function dayOfLife(dob, today = new Date()) {
-  return Math.max(1, differenceInDays(today, dob) + 1);
+  const days = differenceInDays(today, dob);
+  if (days < 0) return `${Math.abs(days)}d to go`;
+  return `Day ${days + 1}`;
 }
 
 export function pumpExpiry(storage, labelDate) {

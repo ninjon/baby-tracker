@@ -143,15 +143,29 @@ export default function History() {
 
       <div style={{ padding: 10 }}>
         {dateKeys.length === 0 && !loading && (
-          <p
+          <div
             style={{
               textAlign: "center",
+              padding: "48px 24px",
               color: "var(--color-text-secondary)",
-              padding: 32,
             }}
           >
-            No logs yet.
-          </p>
+            <div style={{ fontSize: 32, marginBottom: 12 }}>📋</div>
+            <div
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: 18,
+                fontWeight: 400,
+                color: "var(--color-text-primary)",
+                marginBottom: 6,
+              }}
+            >
+              No logs yet
+            </div>
+            <div style={{ fontSize: 13 }}>
+              Tap + to log a feeding, diaper, or sleep.
+            </div>
+          </div>
         )}
 
         {dateKeys.map((dateKey) => (
@@ -223,6 +237,11 @@ export default function History() {
                       }}
                     >
                       {time}
+                      {log.logged_by_name && (
+                        <span style={{ marginLeft: 6, opacity: 0.7 }}>
+                          · {log.logged_by_name}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div style={{ fontSize: 14, color: "var(--color-border)" }}>

@@ -103,7 +103,9 @@ function MoreMenu() {
       </div>
 
       <button
-        onClick={signOut}
+        onClick={() => {
+          if (window.confirm("Sign out of Sophie's Tracker?")) signOut();
+        }}
         style={{
           display: "flex",
           alignItems: "center",

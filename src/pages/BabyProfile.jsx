@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBaby } from "../context/BabyContext";
-import { EditIcon } from "../components/Icons";
+import { EditIcon, ChevronRightIcon } from "../components/Icons";
 
 const INPUT_STYLE = {
   display: "block",
@@ -72,19 +72,19 @@ export default function BabyProfile() {
         }}
       >
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/more")}
           aria-label="Go back"
           style={{
             background: "none",
             border: "none",
             padding: "4px 8px 4px 0",
-            fontSize: 22,
             color: "var(--color-accent)",
             cursor: "pointer",
-            lineHeight: 1,
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          ‹
+          <ChevronRightIcon size={22} style={{ transform: "rotate(180deg)" }} />
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <EditIcon size={18} color="var(--color-accent)" />

@@ -43,13 +43,6 @@ export function BabyProvider({ children }) {
     setLoading(false);
   }
 
-  async function sendMagicLink(email) {
-    return supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin },
-    });
-  }
-
   async function updateBaby(updates) {
     const { data, error } = await supabase
       .from("babies")
@@ -72,7 +65,6 @@ export function BabyProvider({ children }) {
         baby,
         loading,
         setBaby,
-        sendMagicLink,
         updateBaby,
         signOut,
       }}
