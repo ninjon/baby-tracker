@@ -3,7 +3,7 @@ import { useBaby } from "../context/BabyContext";
 import { supabase } from "../lib/supabase";
 
 export default function Onboarding() {
-  const { sendMagicLink, baby, setBaby } = useBaby();
+  const { sendMagicLink, baby, setBaby, session } = useBaby();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [babyName, setBabyName] = useState("");
@@ -57,7 +57,7 @@ export default function Onboarding() {
     setSaving(false);
   }
 
-  if (!sent) {
+  if (!session && !sent) {
     return (
       <div style={{ padding: "32px 24px", maxWidth: 400, margin: "0 auto" }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>
@@ -108,7 +108,7 @@ export default function Onboarding() {
     );
   }
 
-  if (sent && !baby) {
+  if (!session && sent && !baby) {
     return (
       <div
         style={{
