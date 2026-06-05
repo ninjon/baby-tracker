@@ -50,13 +50,32 @@ export function BabyProvider({ children }) {
     });
   }
 
+  async function updateBaby(updates) {
+    const { data, error } = await supabase
+      .from("babies")
+      .update(updates)
+      .eq("id", baby.id)
+      .select()
+      .single();
+    if (!error && data) setBaby(data);
+    return { data, error };
+  }
+
   async function signOut() {
     await supabase.auth.signOut();
   }
 
   return (
     <BabyContext.Provider
-      value={{ session, baby, loading, setBaby, sendMagicLink, signOut }}
+      value={{
+        session,
+        baby,
+        loading,
+        setBaby,
+        sendMagicLink,
+        updateBaby,
+        signOut,
+      }}
     >
       {children}
     </BabyContext.Provider>

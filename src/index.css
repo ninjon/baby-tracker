@@ -1,22 +1,33 @@
 :root {
-  --color-bg: #fafaf8;
+  --color-bg: #faf8f5;
   --color-surface: #ffffff;
-  --color-border: #e0dad3;
+  --color-border: #e8e0d8;
   --color-text-primary: #1a1814;
-  --color-text-secondary: #a89f97;
+  --color-text-secondary: #9c9189;
   --color-accent: #e8855a;
+  --color-accent-hover: #d9744a;
   --color-accent-light: #fff7f3;
-  --color-success: #7dbf7d;
+  --color-success: #6db86d;
   --color-warning: #f5a623;
   --color-danger: #e84040;
 
-  --radius-card: 12px;
+  --radius-card: 14px;
   --radius-button: 14px;
-  --radius-sheet: 20px;
+  --radius-sheet: 22px;
 
-  --tap-min-height: 56px;
+  --tap-min-height: 52px;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover:
+    0 2px 8px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-fab: 0 4px 14px rgba(232, 133, 90, 0.4);
+
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
 
   --font-system: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-heading: "Calistoga", var(--font-system);
+  --font-body: "Inter", var(--font-system);
 }
 
 *,
@@ -28,11 +39,12 @@
 }
 
 body {
-  font-family: var(--font-system);
+  font-family: var(--font-body);
   background: var(--color-bg);
   color: var(--color-text-primary);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button {
@@ -41,6 +53,21 @@ button {
 }
 
 input,
-textarea {
+textarea,
+select {
   font-family: inherit;
+}
+
+button:active {
+  transform: scale(0.97);
+  transition: transform var(--transition-fast);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

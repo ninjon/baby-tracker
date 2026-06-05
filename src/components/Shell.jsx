@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import LogSheet from "./LogSheet";
+import { HomeIcon, HistoryIcon, HeartIcon, MoreIcon } from "./Icons";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Home", emoji: "🏠" },
-  { to: "/history", label: "History", emoji: "📋" },
-  { to: "/health", label: "Health", emoji: "❤️" },
-  { to: "/more", label: "More", emoji: "⋯" },
+  { to: "/", label: "Home", Icon: HomeIcon },
+  { to: "/history", label: "History", Icon: HistoryIcon },
+  { to: "/health", label: "Health", Icon: HeartIcon },
+  { to: "/more", label: "More", Icon: MoreIcon },
 ];
 
 export default function Shell({ babyId }) {
@@ -41,7 +42,7 @@ export default function Shell({ babyId }) {
           borderTop: "1px solid var(--color-border)",
           display: "flex",
           alignItems: "flex-end",
-          padding: "8px 0 12px",
+          padding: "8px 0 env(safe-area-inset-bottom, 12px)",
           zIndex: 50,
         }}
       >
@@ -68,7 +69,8 @@ export default function Shell({ babyId }) {
               margin: "0 auto",
               marginTop: -16,
               cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(232,133,90,0.35)",
+              boxShadow: "var(--shadow-fab)",
+              transition: "background var(--transition-fast)",
             }}
           >
             +
@@ -76,8 +78,10 @@ export default function Shell({ babyId }) {
           <div
             style={{
               fontSize: 10,
+              fontWeight: 600,
               color: "var(--color-text-secondary)",
               marginTop: 4,
+              letterSpacing: "0.02em",
             }}
           >
             Log
@@ -101,6 +105,7 @@ export default function Shell({ babyId }) {
 }
 
 function NavItem({ item }) {
+  const { Icon } = item;
   return (
     <NavLink
       to={item.to}
@@ -110,10 +115,27 @@ function NavItem({ item }) {
         textAlign: "center",
         textDecoration: "none",
         color: isActive ? "var(--color-accent)" : "var(--color-text-secondary)",
+        transition: "color var(--transition-fast)",
+        paddingTop: 4,
       })}
     >
-      <div style={{ fontSize: 18 }}>{item.emoji}</div>
-      <div style={{ fontSize: 10, fontWeight: 600 }}>{item.label}</div>
+      {({ isActive }) => (
+        <>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Icon size={22} strokeWidth={isActive ? 2.25 : 1.75} />
+          </div>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: isActive ? 700 : 500,
+              marginTop: 3,
+              letterSpacing: "0.02em",
+            }}
+          >
+            {item.label}
+          </div>
+        </>
+      )}
     </NavLink>
   );
 }
