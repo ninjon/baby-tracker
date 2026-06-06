@@ -24,6 +24,7 @@ export default function SleepForm({ onSave, onCancel }) {
   const inputStyle = {
     display: "block",
     width: "100%",
+    maxWidth: "100%",
     padding: "14px",
     border: "1.5px solid var(--color-border)",
     borderRadius: "var(--radius-card)",
@@ -33,6 +34,7 @@ export default function SleepForm({ onSave, onCancel }) {
     background: "var(--color-surface)",
     textAlign: "center",
     boxSizing: "border-box",
+    minWidth: 0,
   };
   const labelStyle = {
     fontSize: 10,
@@ -58,7 +60,7 @@ export default function SleepForm({ onSave, onCancel }) {
         Sleep Log
       </div>
 
-      <label style={{ display: "block", marginBottom: 14 }}>
+      <label style={{ display: "block", marginBottom: 14, overflow: "hidden" }}>
         <span style={labelStyle}>Start time</span>
         <input
           aria-label="Start time"
@@ -69,7 +71,7 @@ export default function SleepForm({ onSave, onCancel }) {
         />
       </label>
 
-      <label style={{ display: "block", marginBottom: 16 }}>
+      <label style={{ display: "block", marginBottom: 16, overflow: "hidden" }}>
         <span style={labelStyle}>End time</span>
         <input
           aria-label="End time"
