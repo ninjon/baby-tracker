@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LogSheet from "./LogSheet";
 
+vi.mock("../context/LoggerContext", () => ({
+  useLogger: vi.fn().mockReturnValue({ logger: "Darren" }),
+}));
+
 vi.mock("../lib/supabase", () => ({
   supabase: {
     auth: {
@@ -44,8 +48,8 @@ describe("LogSheet", () => {
         onSaved={vi.fn()}
       />,
     );
-    expect(screen.getByText("🤱 Breast")).toBeInTheDocument();
-    expect(screen.getByText("🍼 Bottle")).toBeInTheDocument();
+    expect(screen.getByText("Breast")).toBeInTheDocument();
+    expect(screen.getByText("Bottle")).toBeInTheDocument();
   });
 
   it('shows DiaperForm directly when category="diaper"', () => {

@@ -42,14 +42,19 @@ describe("formatDuration", () => {
 });
 
 describe("dayOfLife", () => {
-  it("returns 1 on the birth date", () => {
+  it('returns "Day 1" on the birth date', () => {
     const dob = new Date("2026-08-13");
-    expect(dayOfLife(dob, new Date("2026-08-13"))).toBe(1);
+    expect(dayOfLife(dob, new Date("2026-08-13"))).toBe("Day 1");
   });
 
-  it("returns 14 after 13 days", () => {
+  it('returns "Day 14" after 13 days', () => {
     const dob = new Date("2026-08-13");
-    expect(dayOfLife(dob, new Date("2026-08-26"))).toBe(14);
+    expect(dayOfLife(dob, new Date("2026-08-26"))).toBe("Day 14");
+  });
+
+  it('returns "Xd to go" before birth', () => {
+    const dob = new Date("2026-08-13");
+    expect(dayOfLife(dob, new Date("2026-06-06"))).toBe("68d to go");
   });
 });
 

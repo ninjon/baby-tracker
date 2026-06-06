@@ -59,9 +59,9 @@ describe("History", () => {
   it("renders filter chips", () => {
     renderHistory();
     expect(screen.getByText("All")).toBeInTheDocument();
-    expect(screen.getByText("🍼 Feed")).toBeInTheDocument();
-    expect(screen.getByText("💧 Diaper")).toBeInTheDocument();
-    expect(screen.getByText("😴 Sleep")).toBeInTheDocument();
+    expect(screen.getByText("Feed")).toBeInTheDocument();
+    expect(screen.getByText("Diaper")).toBeInTheDocument();
+    expect(screen.getByText("Sleep")).toBeInTheDocument();
   });
 
   it("shows all logs by default", () => {
@@ -72,7 +72,7 @@ describe("History", () => {
 
   it("filters to feeding only when Feed chip is tapped", async () => {
     renderHistory();
-    await userEvent.click(screen.getByText("🍼 Feed"));
+    await userEvent.click(screen.getByText("Feed"));
     expect(screen.getByText(/Bottle · 90ml/)).toBeInTheDocument();
     expect(screen.queryByText(/Wet diaper/)).not.toBeInTheDocument();
   });

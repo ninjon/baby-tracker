@@ -9,6 +9,14 @@ vi.mock("../context/BabyContext", () => ({
   }),
 }));
 
+vi.mock("../context/LoggerContext", () => ({
+  useLogger: vi.fn().mockReturnValue({
+    logger: "Darren",
+    switchLogger: vi.fn(),
+    LOGGERS: ["Darren", "Steffi"],
+  }),
+}));
+
 vi.mock("../hooks/useRealtimeLogs", () => ({
   useRealtimeLogs: vi.fn().mockReturnValue({
     logs: [
@@ -42,21 +50,24 @@ describe("Home", () => {
   it("shows baby name and day of life", () => {
     renderHome();
     expect(screen.getByText(/Sophie/)).toBeInTheDocument();
-    expect(screen.getByText(/Day \d+/)).toBeInTheDocument();
+    // Pre-birth shows "Xd to go"; post-birth shows "Day N"
+    expect(screen.getByText(/\d+d to go|Day \d+/)).toBeInTheDocument();
   });
 
   it("shows the three status cards", () => {
     renderHome();
     expect(screen.getByText("Fed")).toBeInTheDocument();
-    expect(screen.getByText("Diaper")).toBeInTheDocument();
+    // "Diaper" appears in both status card and quick log — assert at least one
+    expect(screen.getAllByText("Diaper").length).toBeGreaterThan(0);
     expect(screen.getByText(/Awake|Sleeping/)).toBeInTheDocument();
   });
 
   it("shows quick log buttons", () => {
     renderHome();
-    expect(screen.getByText("🍼 Feeding")).toBeInTheDocument();
-    expect(screen.getByText("💧 Diaper")).toBeInTheDocument();
-    expect(screen.getByText("😴 Sleep")).toBeInTheDocument();
-    expect(screen.getByText("📏 Growth")).toBeInTheDocument();
+    expect(screen.getByText("Feeding")).toBeInTheDocument();
+    // "Diaper" appears in both status card and quick log button
+    expect(screen.getAllByText("Diaper").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText("Sleep")).toBeInTheDocument();
+    expect(screen.getByText("Growth")).toBeInTheDocument();
   });
 });
