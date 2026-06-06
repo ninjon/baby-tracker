@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useBaby } from "./context/BabyContext";
 import Shell from "./components/Shell";
 import Onboarding from "./pages/Onboarding";
-import AcceptInvite from "./pages/AcceptInvite";
 import Home from "./pages/Home";
 import History from "./pages/History";
 import Health from "./pages/Health";
@@ -30,7 +29,6 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/invite/:token" element={<AcceptInvite />} />
       {!session || !baby ? (
         <Route path="*" element={<Onboarding />} />
       ) : (

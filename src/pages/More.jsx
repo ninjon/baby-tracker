@@ -1,11 +1,9 @@
 import { Routes, Route, Link } from "react-router-dom";
 import PumpLog from "./PumpLog";
-import Family from "./Family";
 import BabyProfile from "./BabyProfile";
 import {
   UserIcon,
   DropletIcon,
-  UsersIcon,
   ChevronRightIcon,
   SignOutIcon,
 } from "../components/Icons";
@@ -17,7 +15,6 @@ export default function More() {
       <Route index element={<MoreMenu />} />
       <Route path="profile" element={<BabyProfile />} />
       <Route path="pump" element={<PumpLog />} />
-      <Route path="family" element={<Family />} />
     </Routes>
   );
 }
@@ -30,7 +27,6 @@ const MENU_ITEMS = [
     sub: "Edit name & due date",
   },
   { to: "pump", Icon: DropletIcon, label: "Pump Log & Milk Stash", sub: null },
-  { to: "family", Icon: UsersIcon, label: "Family & Sharing", sub: null },
 ];
 
 function MoreMenu() {
