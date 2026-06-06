@@ -7,7 +7,7 @@ const INPUT_STYLE = {
   display: "block",
   width: "100%",
   marginTop: 6,
-  padding: "13px 14px",
+  padding: "10px 14px",
   border: "1.5px solid var(--color-border)",
   borderRadius: "var(--radius-card)",
   fontSize: 16,
@@ -15,6 +15,10 @@ const INPUT_STYLE = {
   color: "var(--color-text-primary)",
   outline: "none",
   boxSizing: "border-box",
+  // iOS renders date inputs as native controls that ignore CSS padding.
+  // appearance:none forces CSS-governed rendering while keeping the native picker.
+  WebkitAppearance: "none",
+  appearance: "none",
 };
 
 const LABEL_STYLE = {
