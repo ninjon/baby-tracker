@@ -25,7 +25,7 @@ export default function SleepForm({ onSave, onCancel }) {
     display: "block",
     width: "100%",
     maxWidth: "100%",
-    padding: "14px",
+    padding: "10px 14px",
     border: "1.5px solid var(--color-border)",
     borderRadius: "var(--radius-card)",
     fontSize: 15,
@@ -35,6 +35,11 @@ export default function SleepForm({ onSave, onCancel }) {
     textAlign: "center",
     boxSizing: "border-box",
     minWidth: 0,
+    // iOS renders datetime-local as a native control that ignores CSS padding.
+    // appearance:none forces WebKit to use CSS-governed rendering instead.
+    // The native date/time picker wheel still fires on tap.
+    WebkitAppearance: "none",
+    appearance: "none",
   };
   const labelStyle = {
     fontSize: 10,
