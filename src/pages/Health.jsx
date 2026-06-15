@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import GrowthTab from "./health/GrowthTab";
 import VaccinesTab from "./health/VaccinesTab";
 import HealthLogTab from "./health/HealthLogTab";
@@ -12,7 +13,12 @@ const TABS = [
 ];
 
 export default function Health() {
-  const [activeTab, setActiveTab] = useState("growth");
+  const [searchParams] = useSearchParams();
+  const requestedTab = searchParams.get("tab");
+  const initialTab = TABS.some((t) => t.id === requestedTab)
+    ? requestedTab
+    : "growth";
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   const { Component: ActivePanel } = TABS.find((t) => t.id === activeTab);
 

@@ -18,14 +18,17 @@ export default function PumpForm({ onSave, onCancel }) {
     format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
 
+  const maxDateTime = format(new Date(), "yyyy-MM-dd'T'HH:mm");
   const total = computePumpTotal(
     leftMl ? parseInt(leftMl) : null,
     rightMl ? parseInt(rightMl) : null,
   );
-  const labelDate = new Date();
+  const labelDate = new Date(timestamp);
   const expiry = pumpExpiry(storage, labelDate);
+  const canSave = total > 0;
 
   function handleSave() {
+    if (!canSave) return;
     onSave({
       volume_left_ml: leftMl ? parseInt(leftMl) : null,
       volume_right_ml: rightMl ? parseInt(rightMl) : null,
@@ -72,6 +75,7 @@ export default function PumpForm({ onSave, onCancel }) {
         <input
           type="datetime-local"
           value={timestamp}
+          max={maxDateTime}
           onChange={(e) => setTimestamp(e.target.value)}
           style={{
             fontSize: 12,
@@ -249,17 +253,18 @@ export default function PumpForm({ onSave, onCancel }) {
 
       <button
         onClick={handleSave}
+        disabled={!canSave}
         style={{
           width: "100%",
           padding: 15,
-          background: "var(--color-accent)",
-          color: "#fff",
+          background: canSave ? "var(--color-accent)" : "var(--color-border)",
+          color: canSave ? "#fff" : "var(--color-text-secondary)",
           border: "none",
           borderRadius: "var(--radius-button)",
           fontSize: 15,
           fontWeight: 700,
           minHeight: "var(--tap-min-height)",
-          cursor: "pointer",
+          cursor: canSave ? "pointer" : "not-allowed",
         }}
       >
         Save Pump Log

@@ -40,7 +40,8 @@ function dateLabel(dateKey) {
 
 function logTitle(log) {
   if (log.category === "feeding") {
-    if (log.type === "bottle") return `Bottle · ${log.amount_ml}ml`;
+    if (log.type === "bottle")
+      return log.amount_ml ? `Bottle · ${log.amount_ml}ml` : "Bottle";
     const side = log.side
       ? ` · ${log.side.charAt(0).toUpperCase() + log.side.slice(1)}${log.duration_minutes ? " " + log.duration_minutes + "m" : ""}`
       : "";
@@ -138,7 +139,11 @@ export default function History() {
             {f.Icon && (
               <f.Icon
                 size={12}
-                color={activeFilter === f.value ? "#fff" : "var(--color-text-secondary)"}
+                color={
+                  activeFilter === f.value
+                    ? "#fff"
+                    : "var(--color-text-secondary)"
+                }
               />
             )}
             {f.label}
@@ -167,7 +172,6 @@ export default function History() {
               color: "var(--color-text-secondary)",
             }}
           >
-            
             <div
               style={{
                 fontFamily: "var(--font-heading)",
@@ -261,7 +265,13 @@ export default function History() {
                       )}
                     </div>
                   </div>
-                  <div style={{ fontSize: 14, color: "var(--color-border)" }}>
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      fontSize: 16,
+                      color: "var(--color-text-secondary)",
+                    }}
+                  >
                     ›
                   </div>
                 </div>

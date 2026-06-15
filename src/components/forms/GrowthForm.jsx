@@ -9,8 +9,12 @@ export default function GrowthForm({ onSave, onCancel }) {
   const [measuredAt, setMeasuredAt] = useState(
     format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
+  const maxDateTime = format(new Date(), "yyyy-MM-dd'T'HH:mm");
+
+  const canSave = Boolean(weightKg || heightCm || headCm);
 
   function handleSave() {
+    if (!canSave) return;
     onSave({
       weight_kg: weightKg ? parseFloat(weightKg) : null,
       height_cm: heightCm ? parseFloat(heightCm) : null,
@@ -70,6 +74,7 @@ export default function GrowthForm({ onSave, onCancel }) {
         <input
           type="datetime-local"
           value={measuredAt}
+          max={maxDateTime}
           onChange={(e) => setMeasuredAt(e.target.value)}
           style={{
             fontSize: 12,
@@ -137,17 +142,18 @@ export default function GrowthForm({ onSave, onCancel }) {
       </label>
       <button
         onClick={handleSave}
+        disabled={!canSave}
         style={{
           width: "100%",
           padding: 15,
-          background: "var(--color-accent)",
-          color: "#fff",
+          background: canSave ? "var(--color-accent)" : "var(--color-border)",
+          color: canSave ? "#fff" : "var(--color-text-secondary)",
           border: "none",
           borderRadius: "var(--radius-button)",
           fontSize: 15,
           fontWeight: 700,
           minHeight: "var(--tap-min-height)",
-          cursor: "pointer",
+          cursor: canSave ? "pointer" : "not-allowed",
         }}
       >
         Save Growth Log

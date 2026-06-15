@@ -1,13 +1,15 @@
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useBaby } from "../context/BabyContext";
 import { useLogger } from "../context/LoggerContext";
 import { useRealtimeLogs } from "../hooks/useRealtimeLogs";
+import { useSleepInsights, useFeedInsights } from "../hooks/useInsights";
 import { timeSince, dayOfLife } from "../lib/utils";
 import {
   BottleIcon,
   DropletIcon,
   MoonIcon,
   RulerIcon,
+  ChevronRightIcon,
 } from "../components/Icons";
 
 const QUICK_LOG_BUTTONS = [
@@ -19,12 +21,32 @@ const QUICK_LOG_BUTTONS = [
 
 const FEED_URGENT_MS = 3 * 3600000;
 const DIAPER_URGENT_MS = 4 * 3600000;
+const INSIGHTS_DAYS = 7;
 
 export default function Home() {
   const { baby } = useBaby();
   const { logger, switchLogger, LOGGERS } = useLogger();
   const { openLog } = useOutletContext() ?? {};
   const { logs } = useRealtimeLogs(baby?.id, 50);
+  const navigate = useNavigate();
+
+  const sleep = useSleepInsights(baby?.id, INSIGHTS_DAYS);
+  const feed = useFeedInsights(baby?.id, INSIGHTS_DAYS);
+
+  const insightParts = [];
+  if (sleep.avgMinutesPerDay > 0) {
+    insightParts.push(
+      `${Math.round((sleep.avgMinutesPerDay / 60) * 10) / 10}h sleep/day`,
+    );
+  }
+  if (feed.feedsPerDay > 0) insightParts.push(`${feed.feedsPerDay} feeds/day`);
+  if (feed.avgMlPerBottleFeed > 0) {
+    insightParts.push(`${feed.avgMlPerBottleFeed}ml/bottle`);
+  }
+  const insightsSummary =
+    insightParts.length > 0
+      ? insightParts.join(" · ")
+      : "Keep logging to see sleep & feed trends.";
 
   const lastFeed = logs.find((l) => l.category === "feeding");
   const lastDiaper = logs.find((l) => l.category === "diaper");
@@ -232,20 +254,26 @@ export default function Home() {
         })}
       </div>
 
-      {/* AI Insights placeholder */}
-      <div
+      {/* Insights summary — taps through to Health → Insights */}
+      <button
+        onClick={() => navigate("/health?tab=insights")}
         style={{
+          width: "100%",
           background: "var(--color-accent-light)",
           border: "1px solid #F5D5C5",
           borderRadius: "var(--radius-card)",
           padding: 12,
           display: "flex",
           gap: 10,
-          alignItems: "flex-start",
+          alignItems: "center",
+          cursor: "pointer",
+          textAlign: "left",
         }}
       >
-        <span style={{ fontSize: 16 }}>✨</span>
-        <div>
+        <span style={{ fontSize: 16 }} aria-hidden="true">
+          ✨
+        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
               fontSize: 12,
@@ -254,13 +282,14 @@ export default function Home() {
               marginBottom: 2,
             }}
           >
-            AI Insights
+            Insights · last {INSIGHTS_DAYS} days
           </div>
           <div style={{ fontSize: 12, color: "#7A4030", lineHeight: 1.4 }}>
-            Insights will appear here once there&apos;s enough data.
+            {insightsSummary}
           </div>
         </div>
-      </div>
+        <ChevronRightIcon size={16} color="#C06030" />
+      </button>
     </div>
   );
 }

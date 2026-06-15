@@ -9,6 +9,15 @@ export default function BottomSheet({ open, onClose, children }) {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    function handleKeyDown(e) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
@@ -23,6 +32,8 @@ export default function BottomSheet({ open, onClose, children }) {
         }}
       />
       <div
+        role="dialog"
+        aria-modal="true"
         style={{
           position: "absolute",
           bottom: 0,

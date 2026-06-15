@@ -16,6 +16,7 @@ export default function DiaperForm({ onSave, onCancel }) {
   const [timestamp, setTimestamp] = useState(
     format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
+  const maxDateTime = format(new Date(), "yyyy-MM-dd'T'HH:mm");
 
   const showExtras = type === "dirty" || type === "both";
   const selectedColor = DIAPER_COLORS.find((c) => c.value === color);
@@ -54,6 +55,7 @@ export default function DiaperForm({ onSave, onCancel }) {
         <input
           type="datetime-local"
           value={timestamp}
+          max={maxDateTime}
           onChange={(e) => setTimestamp(e.target.value)}
           style={{
             fontSize: 12,
@@ -140,10 +142,19 @@ export default function DiaperForm({ onSave, onCancel }) {
             }}
           >
             {DIAPER_COLORS.map((c) => (
-              <div
+              <button
                 key={c.value}
-                style={{ textAlign: "center" }}
+                type="button"
+                aria-label={`Colour ${c.label}`}
+                aria-pressed={color === c.value}
                 onClick={() => setColor(c.value)}
+                style={{
+                  textAlign: "center",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                }}
               >
                 <div
                   style={{
@@ -210,7 +221,7 @@ export default function DiaperForm({ onSave, onCancel }) {
                 >
                   {c.note}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
 

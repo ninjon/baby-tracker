@@ -12,8 +12,14 @@ export default function FeedingForm({ onSave, onCancel }) {
   const [timestamp, setTimestamp] = useState(
     format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
+  const maxDateTime = format(new Date(), "yyyy-MM-dd'T'HH:mm");
+
+  const canSave =
+    type === "breast" ||
+    (type === "bottle" && amountMl !== "" && parseInt(amountMl) > 0);
 
   function handleSave() {
+    if (!canSave) return;
     onSave({
       type,
       side: type === "breast" ? side : null,
@@ -59,6 +65,7 @@ export default function FeedingForm({ onSave, onCancel }) {
         <input
           type="datetime-local"
           value={timestamp}
+          max={maxDateTime}
           onChange={(e) => setTimestamp(e.target.value)}
           style={{
             fontSize: 12,
@@ -219,17 +226,18 @@ export default function FeedingForm({ onSave, onCancel }) {
 
       <button
         onClick={handleSave}
+        disabled={!canSave}
         style={{
           width: "100%",
           padding: 15,
-          background: "var(--color-accent)",
-          color: "#fff",
+          background: canSave ? "var(--color-accent)" : "var(--color-border)",
+          color: canSave ? "#fff" : "var(--color-text-secondary)",
           border: "none",
           borderRadius: "var(--radius-button)",
           fontSize: 15,
           fontWeight: 700,
           minHeight: "var(--tap-min-height)",
-          cursor: "pointer",
+          cursor: canSave ? "pointer" : "not-allowed",
         }}
       >
         Save Feeding Log

@@ -17,6 +17,22 @@ vi.mock("../context/LoggerContext", () => ({
   }),
 }));
 
+vi.mock("../hooks/useInsights", () => ({
+  useSleepInsights: vi.fn().mockReturnValue({
+    dailyTotals: [],
+    longestStretchMinutes: 0,
+    avgMinutesPerDay: 0,
+    loading: false,
+  }),
+  useFeedInsights: vi.fn().mockReturnValue({
+    dailyAmounts: [],
+    typeBreakdown: { breast: 0, bottle: 0 },
+    feedsPerDay: 0,
+    avgMlPerBottleFeed: 0,
+    loading: false,
+  }),
+}));
+
 vi.mock("../hooks/useRealtimeLogs", () => ({
   useRealtimeLogs: vi.fn().mockReturnValue({
     logs: [
@@ -69,5 +85,13 @@ describe("Home", () => {
     expect(screen.getAllByText("Diaper").length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText("Sleep")).toBeInTheDocument();
     expect(screen.getByText("Growth")).toBeInTheDocument();
+  });
+
+  it("shows the insights summary card with a fallback when no data", () => {
+    renderHome();
+    expect(screen.getByText(/Insights · last 7 days/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Keep logging to see sleep & feed trends/),
+    ).toBeInTheDocument();
   });
 });

@@ -8,6 +8,7 @@ export default function SleepForm({ onSave, onCancel }) {
   );
   const [endTime, setEndTime] = useState(format(now, "yyyy-MM-dd'T'HH:mm"));
   const [notes, setNotes] = useState("");
+  const maxDateTime = format(now, "yyyy-MM-dd'T'HH:mm");
 
   function buildPayload(endTimeIso) {
     const start = new Date(startTime);
@@ -71,6 +72,7 @@ export default function SleepForm({ onSave, onCancel }) {
           aria-label="Start time"
           type="datetime-local"
           value={startTime}
+          max={maxDateTime}
           onChange={(e) => setStartTime(e.target.value)}
           style={inputStyle}
         />
@@ -82,6 +84,7 @@ export default function SleepForm({ onSave, onCancel }) {
           aria-label="End time"
           type="datetime-local"
           value={endTime}
+          max={maxDateTime}
           onChange={(e) => setEndTime(e.target.value)}
           style={inputStyle}
         />

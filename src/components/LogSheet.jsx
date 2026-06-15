@@ -58,6 +58,11 @@ export default function LogSheet({
     const {
       data: { user },
     } = await supabase.auth.getUser();
+    if (!user) {
+      setSaving(false);
+      setError("Your session has expired. Please sign in again.");
+      return;
+    }
     const { error: dbErr } = await supabase.from(table).insert({
       ...payload,
       baby_id: babyId,
