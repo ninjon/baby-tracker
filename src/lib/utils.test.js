@@ -5,6 +5,8 @@ import {
   dayOfLife,
   pumpExpiry,
   computePumpTotal,
+  summarizeToday,
+  nextBreastSide,
 } from "./utils";
 
 describe("timeSince", () => {
@@ -84,5 +86,119 @@ describe("computePumpTotal", () => {
   it("treats null as 0", () => {
     expect(computePumpTotal(null, 75)).toBe(75);
     expect(computePumpTotal(50, null)).toBe(50);
+  });
+});
+
+describe("summarizeToday", () => {
+  const now = new Date("2026-08-20T15:00:00");
+  const todayAt = (h, m = 0) =>
+    new Date(
+      `2026-08-20T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00`,
+    ).toISOString();
+  const yesterday = new Date("2026-08-19T12:00:00").toISOString();
+
+  it("counts today's feeds and sums bottle ml", () => {
+    const logs = [
+      {
+        category: "feeding",
+        type: "bottle",
+        amount_ml: 90,
+        timestamp: todayAt(8),
+      },
+      {
+        category: "feeding",
+        type: "breast",
+        side: "left",
+        timestamp: todayAt(11),
+      },
+      {
+        category: "feeding",
+        type: "bottle",
+        amount_ml: 60,
+        timestamp: todayAt(14),
+      },
+      {
+        category: "feeding",
+        type: "bottle",
+        amount_ml: 100,
+        timestamp: yesterday,
+      },
+    ];
+    const r = summarizeToday(logs, now);
+    expect(r.feeds).toBe(3);
+    expect(r.bottleMl).toBe(150);
+  });
+
+  it("counts wet and dirty diapers, with 'both' counting as each", () => {
+    const logs = [
+      { category: "diaper", type: "wet", timestamp: todayAt(7) },
+      { category: "diaper", type: "dirty", timestamp: todayAt(9) },
+      { category: "diaper", type: "both", timestamp: todayAt(12) },
+      { category: "diaper", type: "wet", timestamp: yesterday },
+    ];
+    const r = summarizeToday(logs, now);
+    expect(r.wet).toBe(2);
+    expect(r.dirty).toBe(2);
+  });
+
+  it("returns zeros when there is no data today", () => {
+    expect(summarizeToday([], now)).toEqual({
+      feeds: 0,
+      wet: 0,
+      dirty: 0,
+      bottleMl: 0,
+    });
+  });
+});
+
+describe("nextBreastSide", () => {
+  it("suggests the opposite of the most recent breast feed", () => {
+    const logs = [
+      {
+        category: "feeding",
+        type: "breast",
+        side: "left",
+        timestamp: "2026-08-20T11:00:00Z",
+      },
+      {
+        category: "feeding",
+        type: "breast",
+        side: "right",
+        timestamp: "2026-08-20T08:00:00Z",
+      },
+    ];
+    expect(nextBreastSide(logs)).toBe("right");
+  });
+
+  it("ignores bottle feeds when finding the last side", () => {
+    const logs = [
+      {
+        category: "feeding",
+        type: "bottle",
+        amount_ml: 90,
+        timestamp: "2026-08-20T12:00:00Z",
+      },
+      {
+        category: "feeding",
+        type: "breast",
+        side: "right",
+        timestamp: "2026-08-20T09:00:00Z",
+      },
+    ];
+    expect(nextBreastSide(logs)).toBe("left");
+  });
+
+  it("returns null when last side was 'both' or there is no breast feed", () => {
+    expect(
+      nextBreastSide([
+        {
+          category: "feeding",
+          type: "breast",
+          side: "both",
+          timestamp: "2026-08-20T09:00:00Z",
+        },
+      ]),
+    ).toBeNull();
+    expect(nextBreastSide([])).toBeNull();
   });
 });

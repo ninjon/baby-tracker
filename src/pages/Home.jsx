@@ -3,7 +3,13 @@ import { useBaby } from "../context/BabyContext";
 import { useLogger } from "../context/LoggerContext";
 import { useRealtimeLogs } from "../hooks/useRealtimeLogs";
 import { useSleepInsights, useFeedInsights } from "../hooks/useInsights";
-import { timeSince, dayOfLife } from "../lib/utils";
+import {
+  timeSince,
+  dayOfLife,
+  summarizeToday,
+  nextBreastSide,
+} from "../lib/utils";
+import { supabase } from "../lib/supabase";
 import {
   BottleIcon,
   DropletIcon,
@@ -52,6 +58,25 @@ export default function Home() {
   const lastDiaper = logs.find((l) => l.category === "diaper");
   const activeSleep = logs.find((l) => l.category === "sleep" && !l.end_time);
   const lastSleep = logs.find((l) => l.category === "sleep" && l.end_time);
+
+  const today = summarizeToday(logs);
+  const nextSide = nextBreastSide(logs);
+
+  async function endSleep() {
+    if (!activeSleep) return;
+    const end = new Date();
+    const durationMinutes = Math.round(
+      (end - new Date(activeSleep.start_time)) / 60000,
+    );
+    await supabase
+      .from("sleep_logs")
+      .update({
+        end_time: end.toISOString(),
+        duration_minutes: durationMinutes,
+      })
+      .eq("id", activeSleep.id);
+    // Realtime pushes the change back and the card flips to "Awake".
+  }
 
   const dob = baby ? new Date(baby.date_of_birth) : null;
 
@@ -187,7 +212,10 @@ export default function Home() {
           <StatusCard
             label="Sleeping"
             value={timeSince(new Date(activeSleep.start_time))}
-            sub="since"
+            sub="tap to end"
+            onClick={() => {
+              if (window.confirm("End this sleep now?")) endSleep();
+            }}
           />
         ) : (
           <StatusCard
@@ -196,6 +224,26 @@ export default function Home() {
             sub={lastSleep ? "since" : ""}
           />
         )}
+      </div>
+
+      {/* Today so far — running daily totals */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-card)",
+          padding: "12px 8px",
+          marginBottom: 20,
+          boxShadow: "var(--shadow-card)",
+        }}
+      >
+        <TodayStat value={today.feeds} label="feeds" />
+        <TodayStat value={`${today.bottleMl}`} label="ml bottle" />
+        <TodayStat value={today.wet} label="wet" />
+        <TodayStat value={today.dirty} label="dirty" />
       </div>
 
       {/* Quick log */}
@@ -211,6 +259,21 @@ export default function Home() {
       >
         Quick Log
       </div>
+      {nextSide && (
+        <div
+          style={{
+            fontSize: 12,
+            color: "var(--color-text-secondary)",
+            marginBottom: 10,
+            marginTop: -2,
+          }}
+        >
+          Breast: start on{" "}
+          <span style={{ color: "var(--color-accent)", fontWeight: 700 }}>
+            {nextSide === "left" ? "Left" : "Right"}
+          </span>
+        </div>
+      )}
       <div
         style={{
           display: "grid",
@@ -294,18 +357,21 @@ export default function Home() {
   );
 }
 
-function StatusCard({ label, value, sub, urgent }) {
-  return (
-    <div
-      style={{
-        background: "var(--color-surface)",
-        border: `1px solid ${urgent ? "var(--color-warning)" : "var(--color-border)"}`,
-        borderRadius: "var(--radius-card)",
-        padding: 10,
-        textAlign: "center",
-        boxShadow: "var(--shadow-card)",
-      }}
-    >
+function StatusCard({ label, value, sub, urgent, onClick }) {
+  const cardStyle = {
+    width: "100%",
+    background: "var(--color-surface)",
+    border: `1px solid ${urgent ? "var(--color-warning)" : "var(--color-border)"}`,
+    borderRadius: "var(--radius-card)",
+    padding: 10,
+    textAlign: "center",
+    boxShadow: "var(--shadow-card)",
+    cursor: onClick ? "pointer" : "default",
+    font: "inherit",
+    color: "inherit",
+  };
+  const inner = (
+    <>
       <div style={{ fontSize: 11, color: "#888", fontWeight: 500 }}>
         {label}
       </div>
@@ -319,8 +385,42 @@ function StatusCard({ label, value, sub, urgent }) {
       >
         {value}
       </div>
-      <div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>
-        {sub}
+      <div style={{ fontSize: 10, color: "var(--color-accent)" }}>{sub}</div>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} style={cardStyle}>
+        {inner}
+      </button>
+    );
+  }
+  return <div style={cardStyle}>{inner}</div>;
+}
+
+function TodayStat({ value, label }) {
+  return (
+    <div style={{ textAlign: "center", minWidth: 0 }}>
+      <div
+        style={{
+          fontSize: 18,
+          fontWeight: 700,
+          color: "var(--color-text-primary)",
+        }}
+      >
+        {value}
+      </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: "var(--color-text-secondary)",
+          textTransform: "uppercase",
+          letterSpacing: "0.04em",
+          marginTop: 1,
+        }}
+      >
+        {label}
       </div>
     </div>
   );
