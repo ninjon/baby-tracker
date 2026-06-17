@@ -6,6 +6,7 @@ import SleepForm from "./forms/SleepForm";
 import GrowthForm from "./forms/GrowthForm";
 import PumpForm from "./forms/PumpForm";
 import { supabase } from "../lib/supabase";
+import { enqueue } from "../lib/offlineQueue";
 import { useLogger } from "../context/LoggerContext";
 import {
   BottleIcon,
@@ -74,20 +75,40 @@ export default function LogSheet({
       return;
     }
 
+    // getSession() reads the locally cached session, so it works offline too.
     const {
-      data: { user },
-    } = await supabase.auth.getUser();
+      data: { session },
+    } = await supabase.auth.getSession();
+    const user = session?.user;
     if (!user) {
       setSaving(false);
       setError("Your session has expired. Please sign in again.");
       return;
     }
-    const { error: dbErr } = await supabase.from(table).insert({
+    const row = {
       ...payload,
       baby_id: babyId,
       logged_by: user.id,
       logged_by_name: logger,
-    });
+    };
+
+    // Offline: queue the insert locally; it syncs automatically on reconnect.
+    if (!navigator.onLine) {
+      enqueue({
+        tempId: crypto.randomUUID?.() ?? `pending-${Date.now()}`,
+        table,
+        category: activeCategory,
+        row,
+        queued_at: Date.now(),
+      });
+      setSaving(false);
+      onSaved?.({ category: activeCategory, ...payload });
+      onClose();
+      setActiveCategory(initialCategory);
+      return;
+    }
+
+    const { error: dbErr } = await supabase.from(table).insert(row);
     setSaving(false);
     if (dbErr) {
       setError(dbErr.message);

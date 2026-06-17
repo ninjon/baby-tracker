@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import LogSheet from "./LogSheet";
+import { supabase } from "../lib/supabase";
+import { flushQueue, getQueue, subscribeQueue } from "../lib/offlineQueue";
+import { useOnlineStatus } from "../hooks/useOnlineStatus";
 import { HomeIcon, HistoryIcon, HeartIcon, MoreIcon } from "./Icons";
 
 const NAV_ITEMS = [
@@ -14,6 +17,20 @@ export default function Shell({ babyId }) {
   const [logOpen, setLogOpen] = useState(false);
   const [logCategory, setLogCategory] = useState(null);
   const [editLog, setEditLog] = useState(null);
+
+  const isOnline = useOnlineStatus();
+  const [pendingCount, setPendingCount] = useState(() => getQueue().length);
+
+  useEffect(() => {
+    const update = () => setPendingCount(getQueue().length);
+    update();
+    return subscribeQueue(update);
+  }, []);
+
+  // Replay any queued offline logs whenever we're online.
+  useEffect(() => {
+    if (isOnline) flushQueue(supabase);
+  }, [isOnline]);
 
   function openLog(category = null) {
     setEditLog(null);
@@ -40,6 +57,32 @@ export default function Shell({ babyId }) {
         background: "var(--color-bg)",
       }}
     >
+      {(!isOnline || pendingCount > 0) && (
+        <div
+          role="status"
+          style={{
+            flexShrink: 0,
+            padding: "7px 16px",
+            fontSize: 12,
+            fontWeight: 600,
+            textAlign: "center",
+            color: isOnline ? "#7A4030" : "#8B5E00",
+            background: isOnline ? "var(--color-accent-light)" : "#FFF7EC",
+            borderBottom: `1px solid ${
+              isOnline ? "#F5D5C5" : "var(--color-warning)"
+            }`,
+          }}
+        >
+          {isOnline
+            ? `Syncing ${pendingCount} pending ${
+                pendingCount === 1 ? "entry" : "entries"
+              }…`
+            : `Offline — ${
+                pendingCount > 0 ? `${pendingCount} saved here, ` : ""
+              }logs sync when you're back online`}
+        </div>
+      )}
+
       <main style={{ flex: 1, overflowY: "auto", paddingBottom: 80 }}>
         <Outlet context={{ babyId, openLog, openEdit }} />
       </main>
