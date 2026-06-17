@@ -14,7 +14,10 @@ vi.mock("../lib/supabase", () => ({
     },
     from: vi.fn().mockReturnValue({
       insert: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
       select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockResolvedValue({ error: null }),
       single: vi.fn().mockResolvedValue({ data: [{ id: "1" }], error: null }),
     }),
   },
@@ -63,5 +66,26 @@ describe("LogSheet", () => {
       />,
     );
     expect(screen.getByText("Wet")).toBeInTheDocument();
+  });
+
+  it("opens in edit mode pre-filled with a Delete button", () => {
+    render(
+      <LogSheet
+        open
+        babyId="baby-1"
+        editLog={{
+          id: "f1",
+          category: "feeding",
+          type: "bottle",
+          amount_ml: 90,
+          timestamp: "2026-08-20T08:00:00Z",
+        }}
+        onClose={vi.fn()}
+        onSaved={vi.fn()}
+      />,
+    );
+    // Skips the picker, shows the feeding form pre-filled, with Delete.
+    expect(screen.getByDisplayValue("90")).toBeInTheDocument();
+    expect(screen.getByText("Delete entry")).toBeInTheDocument();
   });
 });

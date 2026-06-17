@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DIAPER_COLORS, CONSISTENCIES } from "../../lib/diaperConstants";
 import { format } from "date-fns";
+import DeleteLogButton from "./DeleteLogButton";
 
 const TYPES = [
   { value: "wet", label: "Wet" },
@@ -8,13 +9,18 @@ const TYPES = [
   { value: "both", label: "Both" },
 ];
 
-export default function DiaperForm({ onSave, onCancel }) {
-  const [type, setType] = useState("wet");
-  const [color, setColor] = useState("yellow");
-  const [consistency, setConsistency] = useState("seedy");
-  const [notes, setNotes] = useState("");
+export default function DiaperForm({ onSave, onCancel, initial, onDelete }) {
+  const [type, setType] = useState(initial?.type ?? "wet");
+  const [color, setColor] = useState(initial?.color ?? "yellow");
+  const [consistency, setConsistency] = useState(
+    initial?.consistency ?? "seedy",
+  );
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   const [timestamp, setTimestamp] = useState(
-    format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+    format(
+      initial?.timestamp ? new Date(initial.timestamp) : new Date(),
+      "yyyy-MM-dd'T'HH:mm",
+    ),
   );
   const maxDateTime = format(new Date(), "yyyy-MM-dd'T'HH:mm");
 
@@ -339,6 +345,7 @@ export default function DiaperForm({ onSave, onCancel }) {
       >
         Save Diaper Log
       </button>
+      <DeleteLogButton onDelete={onDelete} />
     </div>
   );
 }

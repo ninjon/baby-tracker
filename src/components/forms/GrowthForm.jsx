@@ -1,13 +1,23 @@
 import { useState } from "react";
 import { format } from "date-fns";
+import DeleteLogButton from "./DeleteLogButton";
 
-export default function GrowthForm({ onSave, onCancel }) {
-  const [weightKg, setWeightKg] = useState("");
-  const [heightCm, setHeightCm] = useState("");
-  const [headCm, setHeadCm] = useState("");
-  const [notes, setNotes] = useState("");
+export default function GrowthForm({ onSave, onCancel, initial, onDelete }) {
+  const [weightKg, setWeightKg] = useState(
+    initial?.weight_kg != null ? String(initial.weight_kg) : "",
+  );
+  const [heightCm, setHeightCm] = useState(
+    initial?.height_cm != null ? String(initial.height_cm) : "",
+  );
+  const [headCm, setHeadCm] = useState(
+    initial?.head_cm != null ? String(initial.head_cm) : "",
+  );
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   const [measuredAt, setMeasuredAt] = useState(
-    format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+    format(
+      initial?.measured_at ? new Date(initial.measured_at) : new Date(),
+      "yyyy-MM-dd'T'HH:mm",
+    ),
   );
   const maxDateTime = format(new Date(), "yyyy-MM-dd'T'HH:mm");
 
@@ -158,6 +168,7 @@ export default function GrowthForm({ onSave, onCancel }) {
       >
         Save Growth Log
       </button>
+      <DeleteLogButton onDelete={onDelete} />
     </div>
   );
 }

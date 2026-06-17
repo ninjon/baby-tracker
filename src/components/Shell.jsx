@@ -13,10 +13,22 @@ const NAV_ITEMS = [
 export default function Shell({ babyId }) {
   const [logOpen, setLogOpen] = useState(false);
   const [logCategory, setLogCategory] = useState(null);
+  const [editLog, setEditLog] = useState(null);
 
   function openLog(category = null) {
+    setEditLog(null);
     setLogCategory(category);
     setLogOpen(true);
+  }
+
+  function openEdit(log) {
+    setEditLog(log);
+    setLogOpen(true);
+  }
+
+  function closeLog() {
+    setLogOpen(false);
+    setEditLog(null);
   }
 
   return (
@@ -29,7 +41,7 @@ export default function Shell({ babyId }) {
       }}
     >
       <main style={{ flex: 1, overflowY: "auto", paddingBottom: 80 }}>
-        <Outlet context={{ babyId, openLog }} />
+        <Outlet context={{ babyId, openLog, openEdit }} />
       </main>
 
       <nav
@@ -99,8 +111,9 @@ export default function Shell({ babyId }) {
         open={logOpen}
         babyId={babyId}
         category={logCategory}
-        onClose={() => setLogOpen(false)}
-        onSaved={() => setLogOpen(false)}
+        editLog={editLog}
+        onClose={closeLog}
+        onSaved={closeLog}
       />
     </div>
   );

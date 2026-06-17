@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import { format, isToday, isYesterday } from "date-fns";
 import { useBaby } from "../context/BabyContext";
 import { useRealtimeLogs } from "../hooks/useRealtimeLogs";
@@ -79,6 +80,7 @@ const CATEGORY_STYLES = {
 
 export default function History() {
   const { baby } = useBaby();
+  const { openEdit } = useOutletContext() ?? {};
   const { logs, loading } = useRealtimeLogs(baby?.id, 200);
   const [activeFilter, setActiveFilter] = useState("all");
 
@@ -213,9 +215,16 @@ export default function History() {
                 ? format(new Date(log.sortTime), "h:mm a")
                 : "";
               return (
-                <div
+                <button
                   key={log.id}
+                  type="button"
+                  onClick={() => openEdit?.(log)}
                   style={{
+                    width: "100%",
+                    font: "inherit",
+                    textAlign: "left",
+                    color: "inherit",
+                    cursor: "pointer",
                     background: "var(--color-surface)",
                     border: "1px solid var(--color-border)",
                     borderRadius: 11,
@@ -274,7 +283,7 @@ export default function History() {
                   >
                     ›
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>

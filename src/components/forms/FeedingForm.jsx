@@ -1,16 +1,24 @@
 import { useState } from "react";
 import { format } from "date-fns";
+import DeleteLogButton from "./DeleteLogButton";
 
 const SIDES = ["left", "right", "both"];
 
-export default function FeedingForm({ onSave, onCancel }) {
-  const [type, setType] = useState("breast");
-  const [side, setSide] = useState("left");
-  const [durationMinutes, setDurationMinutes] = useState("");
-  const [amountMl, setAmountMl] = useState("");
-  const [notes, setNotes] = useState("");
+export default function FeedingForm({ onSave, onCancel, initial, onDelete }) {
+  const [type, setType] = useState(initial?.type ?? "breast");
+  const [side, setSide] = useState(initial?.side ?? "left");
+  const [durationMinutes, setDurationMinutes] = useState(
+    initial?.duration_minutes != null ? String(initial.duration_minutes) : "",
+  );
+  const [amountMl, setAmountMl] = useState(
+    initial?.amount_ml != null ? String(initial.amount_ml) : "",
+  );
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   const [timestamp, setTimestamp] = useState(
-    format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+    format(
+      initial?.timestamp ? new Date(initial.timestamp) : new Date(),
+      "yyyy-MM-dd'T'HH:mm",
+    ),
   );
   const maxDateTime = format(new Date(), "yyyy-MM-dd'T'HH:mm");
 
@@ -242,6 +250,7 @@ export default function FeedingForm({ onSave, onCancel }) {
       >
         Save Feeding Log
       </button>
+      <DeleteLogButton onDelete={onDelete} />
     </div>
   );
 }

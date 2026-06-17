@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { pumpExpiry, computePumpTotal } from "../../lib/utils";
+import DeleteLogButton from "./DeleteLogButton";
 
 const STORAGE_OPTIONS = [
   { value: "feed_now", label: "Feed Now" },
@@ -8,14 +9,23 @@ const STORAGE_OPTIONS = [
   { value: "freezer", label: "Freezer", emoji: "🧊" },
 ];
 
-export default function PumpForm({ onSave, onCancel }) {
-  const [leftMl, setLeftMl] = useState("");
-  const [rightMl, setRightMl] = useState("");
-  const [durationMinutes, setDurationMinutes] = useState("");
-  const [storage, setStorage] = useState("feed_now");
-  const [notes, setNotes] = useState("");
+export default function PumpForm({ onSave, onCancel, initial, onDelete }) {
+  const [leftMl, setLeftMl] = useState(
+    initial?.volume_left_ml != null ? String(initial.volume_left_ml) : "",
+  );
+  const [rightMl, setRightMl] = useState(
+    initial?.volume_right_ml != null ? String(initial.volume_right_ml) : "",
+  );
+  const [durationMinutes, setDurationMinutes] = useState(
+    initial?.duration_minutes != null ? String(initial.duration_minutes) : "",
+  );
+  const [storage, setStorage] = useState(initial?.storage ?? "feed_now");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   const [timestamp, setTimestamp] = useState(
-    format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+    format(
+      initial?.timestamp ? new Date(initial.timestamp) : new Date(),
+      "yyyy-MM-dd'T'HH:mm",
+    ),
   );
 
   const maxDateTime = format(new Date(), "yyyy-MM-dd'T'HH:mm");
@@ -269,6 +279,7 @@ export default function PumpForm({ onSave, onCancel }) {
       >
         Save Pump Log
       </button>
+      <DeleteLogButton onDelete={onDelete} />
     </div>
   );
 }

@@ -35,6 +35,7 @@ export default function LogSheet({
   open,
   babyId,
   category: initialCategory,
+  editLog,
   onClose,
   onSaved,
 }) {
@@ -43,18 +44,36 @@ export default function LogSheet({
   const [error, setError] = useState(null);
   const { logger } = useLogger();
 
-  // Reset to initialCategory each time the sheet opens
+  // On open, pick the category. Edit mode forces the log's own category and
+  // skips the picker; otherwise use the requested category (or show the picker).
   useEffect(() => {
     if (open) {
-      setActiveCategory(initialCategory ?? null);
+      setActiveCategory(editLog ? editLog.category : (initialCategory ?? null));
       setError(null);
     }
-  }, [open, initialCategory]);
+  }, [open, initialCategory, editLog]);
 
   async function handleSave(payload) {
     setSaving(true);
     setError(null);
     const table = TABLE_MAP[activeCategory];
+
+    // Edit mode: update the existing row in place (keeps original author/baby).
+    if (editLog) {
+      const { error: dbErr } = await supabase
+        .from(table)
+        .update(payload)
+        .eq("id", editLog.id);
+      setSaving(false);
+      if (dbErr) {
+        setError(dbErr.message);
+        return;
+      }
+      onSaved?.();
+      onClose();
+      return;
+    }
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -79,12 +98,34 @@ export default function LogSheet({
     setActiveCategory(initialCategory);
   }
 
+  async function handleDelete() {
+    if (!editLog) return;
+    setSaving(true);
+    setError(null);
+    const { error: dbErr } = await supabase
+      .from(TABLE_MAP[editLog.category])
+      .delete()
+      .eq("id", editLog.id);
+    setSaving(false);
+    if (dbErr) {
+      setError(dbErr.message);
+      return;
+    }
+    onSaved?.();
+    onClose();
+  }
+
   function handleClose() {
     onClose();
     setActiveCategory(initialCategory);
   }
 
-  const formProps = { onSave: handleSave, onCancel: handleClose };
+  const formProps = {
+    onSave: handleSave,
+    onCancel: handleClose,
+    initial: editLog ?? undefined,
+    onDelete: editLog ? handleDelete : undefined,
+  };
 
   return (
     <BottomSheet open={open} onClose={handleClose}>

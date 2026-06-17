@@ -1,13 +1,22 @@
 import { useState } from "react";
 import { format, subMinutes } from "date-fns";
+import DeleteLogButton from "./DeleteLogButton";
 
-export default function SleepForm({ onSave, onCancel }) {
+export default function SleepForm({ onSave, onCancel, initial, onDelete }) {
   const now = new Date();
   const [startTime, setStartTime] = useState(
-    format(subMinutes(now, 30), "yyyy-MM-dd'T'HH:mm"),
+    format(
+      initial?.start_time ? new Date(initial.start_time) : subMinutes(now, 30),
+      "yyyy-MM-dd'T'HH:mm",
+    ),
   );
-  const [endTime, setEndTime] = useState(format(now, "yyyy-MM-dd'T'HH:mm"));
-  const [notes, setNotes] = useState("");
+  const [endTime, setEndTime] = useState(
+    format(
+      initial?.end_time ? new Date(initial.end_time) : now,
+      "yyyy-MM-dd'T'HH:mm",
+    ),
+  );
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   const maxDateTime = format(now, "yyyy-MM-dd'T'HH:mm");
 
   function buildPayload(endTimeIso) {
@@ -127,6 +136,7 @@ export default function SleepForm({ onSave, onCancel }) {
       >
         Save sleep log
       </button>
+      <DeleteLogButton onDelete={onDelete} />
     </div>
   );
 }
