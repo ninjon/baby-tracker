@@ -7,6 +7,7 @@ import {
   computePumpTotal,
   summarizeToday,
   nextBreastSide,
+  summarizeRange,
 } from "./utils";
 
 describe("timeSince", () => {
@@ -200,5 +201,48 @@ describe("nextBreastSide", () => {
       ]),
     ).toBeNull();
     expect(nextBreastSide([])).toBeNull();
+  });
+});
+
+describe("summarizeRange", () => {
+  const now = new Date("2026-08-20T15:00:00");
+
+  it("buckets logs into days, newest first", () => {
+    const logs = [
+      {
+        category: "feeding",
+        type: "bottle",
+        amount_ml: 90,
+        timestamp: "2026-08-20T08:00:00",
+      },
+      { category: "diaper", type: "both", timestamp: "2026-08-20T09:00:00" },
+      {
+        category: "sleep",
+        duration_minutes: 120,
+        start_time: "2026-08-19T22:00:00",
+      },
+    ];
+    const rows = summarizeRange(logs, 7, now);
+    expect(rows).toHaveLength(7);
+    expect(rows[0].date).toBe("2026-08-20");
+    expect(rows[0].feeds).toBe(1);
+    expect(rows[0].bottleMl).toBe(90);
+    expect(rows[0].wet).toBe(1);
+    expect(rows[0].dirty).toBe(1);
+    expect(rows[1].date).toBe("2026-08-19");
+    expect(rows[1].sleepMinutes).toBe(120);
+  });
+
+  it("ignores logs outside the requested range", () => {
+    const logs = [
+      {
+        category: "feeding",
+        type: "bottle",
+        amount_ml: 50,
+        timestamp: "2026-08-01T08:00:00",
+      },
+    ];
+    const rows = summarizeRange(logs, 7, now);
+    expect(rows.every((r) => r.feeds === 0)).toBe(true);
   });
 });
