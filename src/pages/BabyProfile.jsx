@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBaby } from "../context/BabyContext";
+import { useLogger } from "../context/LoggerContext";
 import { EditIcon, ChevronRightIcon } from "../components/Icons";
 
 const INPUT_STYLE = {
@@ -36,6 +37,7 @@ const LABEL_TEXT_STYLE = {
 
 export default function BabyProfile() {
   const { baby, updateBaby } = useBaby();
+  const { caregivers, addCaregiver, removeCaregiver } = useLogger();
   const navigate = useNavigate();
 
   const [name, setName] = useState(baby?.name ?? "");
@@ -43,6 +45,13 @@ export default function BabyProfile() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [newCaregiver, setNewCaregiver] = useState("");
+
+  function handleAddCaregiver(e) {
+    e.preventDefault();
+    addCaregiver(newCaregiver);
+    setNewCaregiver("");
+  }
 
   async function handleSave(e) {
     e.preventDefault();
@@ -190,6 +199,91 @@ export default function BabyProfile() {
           {saving ? "Saving…" : "Save changes"}
         </button>
       </form>
+
+      {/* Caregivers — who can be logged "as" (stored on this device) */}
+      <div style={{ marginTop: 36 }}>
+        <span style={LABEL_TEXT_STYLE}>Caregivers</span>
+        <p
+          style={{
+            fontSize: 12,
+            color: "var(--color-text-secondary)",
+            margin: "5px 0 12px",
+          }}
+        >
+          Names you can log as on the Home screen.
+        </p>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {caregivers.map((person) => (
+            <div
+              key={person}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "10px 14px",
+                background: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-card)",
+              }}
+            >
+              <span style={{ fontSize: 15 }}>{person}</span>
+              {caregivers.length > 1 && (
+                <button
+                  type="button"
+                  aria-label={`Remove ${person}`}
+                  onClick={() => removeCaregiver(person)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "var(--color-danger)",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    padding: "2px 4px",
+                  }}
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <form
+          onSubmit={handleAddCaregiver}
+          style={{ display: "flex", gap: 8, marginTop: 12 }}
+        >
+          <input
+            type="text"
+            value={newCaregiver}
+            onChange={(e) => setNewCaregiver(e.target.value)}
+            placeholder="Add caregiver (e.g. Grandma)"
+            style={{ ...INPUT_STYLE, marginTop: 0, flex: 1 }}
+          />
+          <button
+            type="submit"
+            disabled={!newCaregiver.trim()}
+            style={{
+              padding: "0 18px",
+              borderRadius: "var(--radius-button)",
+              border: "none",
+              background: newCaregiver.trim()
+                ? "var(--color-accent)"
+                : "var(--color-border)",
+              color: newCaregiver.trim()
+                ? "#fff"
+                : "var(--color-text-secondary)",
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: newCaregiver.trim() ? "pointer" : "not-allowed",
+              flexShrink: 0,
+            }}
+          >
+            Add
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
