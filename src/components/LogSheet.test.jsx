@@ -65,7 +65,7 @@ describe("LogSheet", () => {
         onSaved={vi.fn()}
       />,
     );
-    expect(screen.getByText("Wet")).toBeInTheDocument();
+    expect(screen.getByText("Pee")).toBeInTheDocument();
   });
 
   it("opens in edit mode pre-filled with a Delete button", () => {

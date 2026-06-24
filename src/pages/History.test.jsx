@@ -67,14 +67,14 @@ describe("History", () => {
   it("shows all logs by default", () => {
     renderHistory();
     expect(screen.getByText(/Bottle · 90ml/)).toBeInTheDocument();
-    expect(screen.getByText(/Wet diaper/)).toBeInTheDocument();
+    expect(screen.getByText(/Pee diaper/)).toBeInTheDocument();
   });
 
   it("filters to feeding only when Feed chip is tapped", async () => {
     renderHistory();
     await userEvent.click(screen.getByText("Feed"));
     expect(screen.getByText(/Bottle · 90ml/)).toBeInTheDocument();
-    expect(screen.queryByText(/Wet diaper/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Pee diaper/)).not.toBeInTheDocument();
   });
 
   it("shows date group headers", () => {

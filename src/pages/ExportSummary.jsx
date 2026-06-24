@@ -21,7 +21,7 @@ function buildText(babyName, rows) {
   for (const r of rows) {
     const bottle = r.bottleMl ? ` (${r.bottleMl}ml)` : "";
     lines.push(
-      `${dayLabel(r.date)}: ${r.feeds} feeds${bottle}, ${r.wet} wet / ${r.dirty} dirty, ${sleepHours(r.sleepMinutes)}h sleep`,
+      `${dayLabel(r.date)}: ${r.feeds} feeds${bottle}, ${r.wet} pee / ${r.dirty} poop, ${sleepHours(r.sleepMinutes)}h sleep`,
     );
   }
   return lines.join("\n");
@@ -159,8 +159,8 @@ export default function ExportSummary() {
           <div style={{ ...headCell, flex: 1.4, textAlign: "left" }}>Day</div>
           <div style={headCell}>Feeds</div>
           <div style={headCell}>Bottle</div>
-          <div style={headCell}>Wet</div>
-          <div style={headCell}>Dirty</div>
+          <div style={headCell}>Pee</div>
+          <div style={headCell}>Poop</div>
           <div style={headCell}>Sleep</div>
         </div>
 

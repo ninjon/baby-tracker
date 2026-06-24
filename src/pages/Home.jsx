@@ -242,8 +242,8 @@ export default function Home() {
       >
         <TodayStat value={today.feeds} label="feeds" />
         <TodayStat value={`${today.bottleMl}`} label="ml bottle" />
-        <TodayStat value={today.wet} label="wet" />
-        <TodayStat value={today.dirty} label="dirty" />
+        <TodayStat value={today.wet} label="pee" />
+        <TodayStat value={today.dirty} label="poop" />
       </div>
 
       {/* Quick log */}

@@ -4,8 +4,8 @@ import { format } from "date-fns";
 import DeleteLogButton from "./DeleteLogButton";
 
 const TYPES = [
-  { value: "wet", label: "Wet" },
-  { value: "dirty", label: "Dirty" },
+  { value: "wet", label: "Pee" },
+  { value: "dirty", label: "Poop" },
   { value: "both", label: "Both" },
 ];
 

@@ -50,14 +50,14 @@ function logTitle(log) {
   }
   if (log.category === "diaper") {
     return log.type === "wet"
-      ? "Wet diaper"
+      ? "Pee diaper"
       : log.type === "dirty"
-        ? "Dirty diaper"
-        : "Wet + Dirty diaper";
+        ? "Poop diaper"
+        : "Pee + Poop diaper";
   }
   if (log.category === "sleep") {
     if (!log.end_time) return "Sleeping now...";
-    return `Nap · ${formatDuration(log.duration_minutes)}`;
+    return `Sleep · ${formatDuration(log.duration_minutes)}`;
   }
   if (log.category === "growth") {
     const parts = [];
